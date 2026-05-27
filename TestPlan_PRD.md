@@ -12,7 +12,7 @@ This Test Plan outlines the strategy for validating the requirements outlined in
 
 *   Verify that all functional requirements outlined in the PRD are implemented correctly.
 *   Validate that the user interface (UI) and user experience (UX) are intuitive, efficient, and adhere to VWO’s design system.
-*   Assess the security of the login process against potential vulnerabilities.
+*   Assess the security of the login process against potential vulnerabilities.   .
 *   Evaluate the performance of the login page under various load conditions.
 *   Confirm accessibility compliance with WCAG 2.1 AA guidelines.
 

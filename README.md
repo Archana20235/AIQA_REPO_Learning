@@ -1,9 +1,10 @@
 # AIQA_REPO_Learning
 
 AI3X Test Plan Generator
+
 Generated a professional QA Test Plan using Ollama Local LLM.
 
-Tools Used
+**Tools Used**
 
 Ollama
 gemma3:4b

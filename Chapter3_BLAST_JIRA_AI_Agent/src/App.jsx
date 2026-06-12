@@ -3,7 +3,7 @@ import { testPlanToMarkdown, testPlanToCsv, downloadFile } from "./export.js";
 
 export default function App() {
   const [health, setHealth] = useState(null);
-  const [issueKey, setIssueKey] = useState("VWO-48");
+  const [issueKey, setIssueKey] = useState("VMO-1");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [issue, setIssue] = useState(null);
@@ -16,14 +16,20 @@ export default function App() {
       .catch(() => setHealth({ jiraConfigured: false, groqConfigured: false }));
   }, []);
 
+  function normalizeIssueKey(value) {
+    return value.trim().toUpperCase().replace(/\s+/g, "-");
+  }
+
   async function handleGenerate() {
-    if (!issueKey.trim()) return;
+    const key = normalizeIssueKey(issueKey);
+    if (!key) return;
+    setIssueKey(key);
     setLoading(true);
     setError(null);
     setPlan(null);
     setIssue(null);
     try {
-      const res = await fetch(`/api/testplan/${encodeURIComponent(issueKey.trim())}`, {
+      const res = await fetch(`/api/testplan/${encodeURIComponent(key)}`, {
         method: "POST",
       });
       const data = await res.json();
@@ -42,8 +48,12 @@ export default function App() {
   return (
     <div className="app">
       <header>
-        <h1>Jira → Test Plan Generator</h1>
-        <p className="subtitle">B.L.A.S.T. powered QA test plan automation</p>
+        <div>
+          <h1>Jira → Test Plan Generator</h1>
+          <p className="subtitle">
+            b.l.a.s.t. · <span className="tag">groq openai/gpt-oss-120b</span>
+          </p>
+        </div>
       </header>
 
       {notConfigured && (
@@ -54,13 +64,15 @@ export default function App() {
       )}
 
       <section className="generator">
+        <div className="section-label">B.L.A.S.T · GENERATOR</div>
+        <h2>Generate Test Plan</h2>
         <label htmlFor="issueKey">Jira Issue Key</label>
         <div className="input-row">
           <input
             id="issueKey"
             value={issueKey}
             onChange={(e) => setIssueKey(e.target.value)}
-            placeholder="e.g. VWO-48"
+            placeholder="e.g. VMO-1"
             onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
           />
           <button onClick={handleGenerate} disabled={loading}>
@@ -131,6 +143,8 @@ export default function App() {
           </table>
         </section>
       )}
+
+      <footer>Lightweight React · Express proxy · credentials stay local</footer>
     </div>
   );
 }

@@ -1,0 +1,169 @@
+{
+  "name": "My_Jira_Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi !!\nI am Your QA Buddy!!",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -240,
+        -80
+      ],
+      "id": "fb03e666-3762-4773-857a-fe768e67457a",
+      "name": "When chat message received",
+      "webhookId": "de0bf2dd-fef3-483d-905c-df3be7eafbf5"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a 6 years of Experience QA Automation Engineer.\nyou will get detail of JIRA ticket throught  chat.Your task is to create a jira ticket proper step to repraduce throught JIRA tool attached."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -16,
+        -32
+      ],
+      "id": "56b4896b-efc0-4e60-b57a-52d52bf88e7a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3-32b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        64
+      ],
+      "id": "a806fd2c-22bc-487a-90bc-c0e2317a513e",
+      "name": "QWEN Brain",
+      "credentials": {
+        "groqApi": {
+          "id": "7x8GiaOfDwkS7Y1Q",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "value": "10033",
+          "mode": "list",
+          "cachedResultName": "VMO"
+        },
+        "issueType": {
+          "__rl": true,
+          "value": "10043",
+          "mode": "list",
+          "cachedResultName": "Bug"
+        },
+        "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}",
+        "additionalFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        320,
+        96
+      ],
+      "id": "8b82d562-fbdb-44ff-94ee-71128691a5a2",
+      "name": "Create a jira ticket in VMO project",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "rrNlG9eTtGLdzYA5",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -16,
+        176
+      ],
+      "id": "12818d61-0541-4642-89a9-daf57b4539da",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QWEN Brain": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a jira ticket in VMO project": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "fd38332d-1299-4d2d-a9d1-b32d27f565ca",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "425e3ebcb3ceacfdbf909afcfa5dd648fecfac7fdaac172a92eeceff3e67c737"
+  },
+  "nodeGroups": [],
+  "id": "TBwAZrAlQI9B6iq0",
+  "tags": [
+    {
+      "updatedAt": "2026-06-18T03:25:40.929Z",
+      "createdAt": "2026-06-18T03:25:40.929Z",
+      "id": "Nxb37xH7qc3aL0wb",
+      "name": "QABuddy_3x"
+    }
+  ]
+}

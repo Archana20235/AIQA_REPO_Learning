@@ -1,0 +1,104 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi !!\nI am Your QA Buddy!!",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -656,
+        -320
+      ],
+      "id": "b2da501f-da23-42ff-b30f-d62c9545ee8f",
+      "name": "When chat message received",
+      "webhookId": "de0bf2dd-fef3-483d-905c-df3be7eafbf5"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a QA assistant ,you will only answer only Quarry\nrelated to QA."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -432,
+        -272
+      ],
+      "id": "554ae766-abe9-443d-9980-9d19d8b55c2e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3-32b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -176
+      ],
+      "id": "b65178de-f9cb-42bc-bf9a-9d4be65880f7",
+      "name": "QWEN Brain",
+      "credentials": {
+        "groqApi": {
+          "id": "7x8GiaOfDwkS7Y1Q",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QWEN Brain": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "755a333d-3236-4704-84bf-b5abea7c57a3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "425e3ebcb3ceacfdbf909afcfa5dd648fecfac7fdaac172a92eeceff3e67c737"
+  },
+  "nodeGroups": [],
+  "id": "XmTcZoLyashWze7o",
+  "tags": [
+    {
+      "updatedAt": "2026-06-18T03:25:40.929Z",
+      "createdAt": "2026-06-18T03:25:40.929Z",
+      "id": "Nxb37xH7qc3aL0wb",
+      "name": "QABuddy_3x"
+    }
+  ]
+}

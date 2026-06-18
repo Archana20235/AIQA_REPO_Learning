@@ -1,0 +1,283 @@
+{
+  "name": "Read_PRD_createTC_Excel",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -432,
+        -96
+      ],
+      "id": "72903723-0bc2-4130-a9dc-8fbd33902dc4",
+      "name": "When chat message received",
+      "webhookId": "01feae0f-a21b-4359-992c-d4ba14926ce5"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a QA engineer that generates structured test cases from Product Requirements Documents (PRDs).\n\nWhen given a Ticket ID:\n1. Use the \"Fetch RRD from TicketID\" tool to retrieve the PRD content.\n2. Analyze the requirements carefully.\n3. Generate comprehensive test cases covering:\n   - Happy path / positive scenarios\n   - Negative / edge cases\n   - Boundary conditions\n   - Any mentioned acceptance criteria\n\nFor each test case, produce:\n- Test Case ID (TC-001, TC-002, ...)\n- Title\n- Preconditions\n- Test Steps (numbered)\n- Expected Result\n- Priority (High / Medium / Low)\n- Type (Functional / UI / Edge Case / Regression)\n\n4. Use the \"Create sheet with Test Case\" tool to write all test cases to the spreadsheet.\n\nBe thorough. If a requirement is ambiguous, generate test cases that cover all reasonable interpretations. Do not ask clarifying questions — infer from context and test all possibilities."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -272,
+        -96
+      ],
+      "id": "e49cc9a3-ac02-481e-b37e-080addbe5747",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3.6-27b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        80
+      ],
+      "id": "3546d451-b143-4fa8-9d1f-04cc3974c940",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "7x8GiaOfDwkS7Y1Q",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "issueKey": "VMO-1",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "53cd3d74-dc99-46d4-b40f-17e1a1e8502a",
+      "name": "Featch RRD from TicketID",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "rrNlG9eTtGLdzYA5",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yPkoXXmCiDn8bHX9i3JnIPm3EipVQNJfItBV5Kpmmgo",
+          "mode": "list",
+          "cachedResultName": "VMO PRD TestCase",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPkoXXmCiDn8bHX9i3JnIPm3EipVQNJfItBV5Kpmmgo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPkoXXmCiDn8bHX9i3JnIPm3EipVQNJfItBV5Kpmmgo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "TestCase ID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('TestCase_ID__using_to_match_', ``, 'string') }}",
+            "Summery Title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summery_Title', ``, 'string') }}",
+            "Preconditions": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Preconditions', ``, 'string') }}",
+            "Test Steps": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Test_Steps', ``, 'string') }}",
+            "Expected Result": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Expected_Result', ``, 'string') }}",
+            "Actual Result": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Actual_Result', ``, 'string') }}",
+            "Status": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Status', ``, 'string') }}",
+            "Priority": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Priority', ``, 'string') }}",
+            "Assigned ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Assigned_', ``, 'string') }}",
+            "Excution ID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Excution_ID', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "TestCase ID"
+          ],
+          "schema": [
+            {
+              "id": "TestCase ID",
+              "displayName": "TestCase ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Summery Title",
+              "displayName": "Summery Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Preconditions",
+              "displayName": "Preconditions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Test Steps",
+              "displayName": "Test Steps",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Expected Result",
+              "displayName": "Expected Result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Actual Result",
+              "displayName": "Actual Result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Assigned ",
+              "displayName": "Assigned ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Excution ID",
+              "displayName": "Excution ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -96,
+        96
+      ],
+      "id": "90439b83-d1a6-4248-b33e-b2548d0dd8a1",
+      "name": "Create sheet with Test Case",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "u2TdcvT2X6ZgympT",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Featch RRD from TicketID": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create sheet with Test Case": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "441878ea-6657-4b1b-8370-9f00dc30f78e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "425e3ebcb3ceacfdbf909afcfa5dd648fecfac7fdaac172a92eeceff3e67c737"
+  },
+  "nodeGroups": [],
+  "id": "21YtpOcpyf63uFEh",
+  "tags": []
+}

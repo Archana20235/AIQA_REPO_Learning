@@ -1,0 +1,375 @@
+{
+  "name": "VWO_TP_TS_TC_PWScripts",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "prd_pdf",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "PRD_File",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -1024,
+        -752
+      ],
+      "id": "4b97b4d6-52a2-4800-a7bb-b5185c18eee3",
+      "name": "prd_pdf Trigger",
+      "webhookId": "a699865d-22c7-4b50-8a37-57d7cb361933"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7ab3c6cf-1e71-4574-8e85-88685d0fda29",
+              "name": "product_name",
+              "value": "VWO",
+              "type": "string"
+            },
+            {
+              "id": "7b5fc2c8-f245-410b-8d11-bcb2d182c88c",
+              "name": "base_url",
+              "value": "https://app.vwo.com",
+              "type": "string"
+            },
+            {
+              "id": "807769dc-c6d6-413d-ae35-b41e560b25be",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -912,
+        -544
+      ],
+      "id": "d33a84ac-ff0c-4fc9-a86b-78a7cc50b9c2",
+      "name": "VMO Config"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3.6-27b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        -432
+      ],
+      "id": "dea597bf-14c9-42c7-887a-0d7f44cd59c2",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "7x8GiaOfDwkS7Y1Q",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=PRD Content:\\n{{ $json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a senior QA architect. Given a PRD, produce a structured Test Plan with: - Scope & objectives - Features to test - Out of scope - Test types (functional, regression, edge cases, UI) - Entry/exit criteria Be concise and structured."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -720,
+        -688
+      ],
+      "id": "2203e12d-52bd-4e5e-9ffb-a9909d1304ff",
+      "name": "VWO Test Plan "
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        464,
+        -720
+      ],
+      "id": "c4165daa-dc14-4912-bc27-0e2758c74751",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Add a new field called 'myNewField' to the JSON of the item\n$input.item.json.myNewField = 1;\n\nreturn $input.item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        -688
+      ],
+      "id": "1982731d-2404-4b94-8f47-73c3e80bc92e",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Test Plan:\\n{{ $json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a QA engineer. Given a Test Plan, generate detailed test cases. For each test case output: TC-ID | Title | Preconditions | Steps | Expected Result | Priority | Type Cover happy paths, negative cases, edge cases, and all acceptance criteria."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -400,
+        -688
+      ],
+      "id": "dd40d630-00bd-441b-bb77-b8317146b0e5",
+      "name": "VWO Test Case"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Test Cases:\\n{{ $json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an expert in Playwright (TypeScript). Given test cases, write production-ready Playwright scripts. Rules: - Use page object model pattern - Use test.describe() blocks per feature - Add meaningful locators (prefer role/label over CSS) - Include beforeEach setup and afterEach teardown - Output as a single Markdown file with fenced code blocks per test file - File format: ```typescript filename: tests/feature-name.spec.ts"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -48,
+        -688
+      ],
+      "id": "5387bcbb-b8c8-40e6-b4cb-ba4cb5b2c722",
+      "name": "Playwright TestScript Generator"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "=data {{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        -1072
+      ],
+      "id": "02b46115-6e4b-4ed8-a585-554e8693430c",
+      "name": "Test Plan"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        -880
+      ],
+      "id": "c586ffe2-e50e-43a6-95b6-73978359809e",
+      "name": "Test Case"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "text",
+        "binaryPropertyName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        -688
+      ],
+      "id": "bb087b5e-d9dd-407b-94d5-4b87e71173d2",
+      "name": "TestScript.md"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "prd_pdf Trigger": {
+      "main": [
+        [
+          {
+            "node": "VMO Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VMO Config": {
+      "main": [
+        [
+          {
+            "node": "VWO Test Plan ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "VWO Test Plan ",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "VWO Test Case",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Playwright TestScript Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VWO Test Plan ": {
+      "main": [
+        [
+          {
+            "node": "VWO Test Case",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Test Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VWO Test Case": {
+      "main": [
+        [
+          {
+            "node": "Playwright TestScript Generator",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Test Case",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Playwright TestScript Generator": {
+      "main": [
+        [
+          {
+            "node": "TestScript.md",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Plan": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Test Case": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TestScript.md": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "dce42859-4c27-4a70-a819-2bf125092bc4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "425e3ebcb3ceacfdbf909afcfa5dd648fecfac7fdaac172a92eeceff3e67c737"
+  },
+  "nodeGroups": [],
+  "id": "Ev7B1l9XEqeOEHwP",
+  "tags": [
+    {
+      "updatedAt": "2026-06-18T03:25:40.929Z",
+      "createdAt": "2026-06-18T03:25:40.929Z",
+      "id": "Nxb37xH7qc3aL0wb",
+      "name": "QABuddy_3x"
+    }
+  ]
+}
